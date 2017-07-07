@@ -14,15 +14,9 @@ export default class NewPlaylist extends Component {
   }
 
   handleSubmit(event){
-    console.log('A name was submitted: ' + this.state.inputValue);
     event.preventDefault();
-    let playlistName = this.state.inputValue;
-    axios.post('/api/playlists', { name: playlistName })
-    .then(res => res.data)
-    .then(result => {
-      console.log(result) // response json from the server!
-      this.setState({inputValue: '', changed: false});
-    });
+    this.props.addPlaylist(this.state.inputValue); // pass the input value to the method from Main!
+    this.setState({inputValue: '', changed: false});
   }
 
   handleChange(event){
