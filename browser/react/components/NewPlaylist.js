@@ -1,11 +1,13 @@
-import React, { Link, Component } from 'react'
+import React, { Link, Component } from 'react';
+import axios from 'axios';
 
 export default class NewPlaylist extends Component {
 
   constructor(){
     super();
     this.state = {
-      inputValue: ''
+      inputValue: '',
+      changed: false
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -13,16 +15,24 @@ export default class NewPlaylist extends Component {
 
   handleSubmit(event){
     console.log('A name was submitted: ' + this.state.inputValue);
-    // event.preventDefault();
+    event.preventDefault();
+    let playlistName = this.state.inputValue;
+    axios.post('/api/playlists', { name: playlistName })
+    .then(res => res.data)
+    .then(result => {
+      console.log(result) // response json from the server!
+      this.setState({inputValue: '', changed: false});
+    });
   }
 
   handleChange(event){
-    console.log(event);
     this.setState({inputValue: event.target.value});
+    this.setState({changed: true});
   }
 
   render() {
-    console.log("render newplaylist");
+    const value = this.state.inputValue;
+    const changed = this.state.changed;
     return (
       <div className="well">
         <form className="form-horizontal" onSubmit={this.handleSubmit} >
@@ -31,14 +41,14 @@ export default class NewPlaylist extends Component {
             <div className="form-group">
               <label className="col-xs-2 control-label">Name</label>
               <div className="col-xs-10">
-                <input onChange={this.handleChange} className="form-control" type="text"/>
+                <input onChange={this.handleChange} className="form-control" type="text" value={this.state.inputValue} />
               </div>
             </div>
+            {((value.length === 0 || value.length > 16) && changed) ?
+            <div className="alert alert-warning">Please enter a name</div> : <div />}
             <div className="form-group">
               <div className="col-xs-10 col-xs-offset-2">
-              <Link to="/new-playlist">
-                <button type="submit" className="btn btn-success">Create Playlist</button>
-              </Link>
+                <button type="submit" className="btn btn-success" value={this.state.inputValue} disabled={value.length === 0 || value.length > 16 }>Create Playlist</button>
               </div>
             </div>
           </fieldset>

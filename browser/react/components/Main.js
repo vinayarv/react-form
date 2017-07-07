@@ -10,6 +10,13 @@ import NewPlaylist from './NewPlaylist'
 
 export default class Main extends Component {
 
+  constructor(){
+    super();
+    this.state = {
+      playlist: []
+    }
+  }
+
   render () {
     return (
       <Router>
